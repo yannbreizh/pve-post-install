@@ -299,10 +299,16 @@ then
   ## this is the configuration for the first node of the cluster
   ## it particularly includes the creation of the shared storage (glusterfs) as well as the creation of the pve cluster
 
+  # start and enable glusterfd daemon
+  echo -e "Start and enable glusterd daemon....\c"
+  echo "`date` - Start and enable glusterd daemon...." >> $aptlogfile
+  systemctl start glusterd
+  sleep 2
+  systemctl enable glusterd
+  sleep 2
   # create the glusterfs volume
   echo -e "Create the glusterfs storage....\c"
   echo "`date` - Create the glusterfs storage...." >> $aptlogfile
-  systemctl start glusterd
   mkdir /mnt/glusterfsstorage
   gluster volume create glusterstorage $mngtIP:/mnt/glusterfsstorage force
   sleep 2
@@ -312,7 +318,7 @@ then
   # create the proxmox cluster
   echo -e "Create the cluster-cpop cluster...\c"
   echo "`date` - Create the cluster-cpop cluster..." >> $aptlogfile
-  pvecm create cluster-cpop -bindnet0_addr $mngtIP -ring0_addr $mngtIP
+  pvecm create cluster-cpop
   sleep 2
   echo -e "  create                                                    [\033[1m\033[32mdone\033[0m]"
   echo "`date` - Done" >> $aptlogfile
@@ -345,10 +351,18 @@ then
     read Rep5
   done
 
+  # start and enable glusterfd daemon
+  echo -e "Start and enable glusterd daemon....\c"
+  echo "`date` - Start and enable glusterd daemon...." >> $aptlogfile
+  systemctl start glusterd
+  sleep 2
+  systemctl enable glusterd
+  sleep 2
+
   # add the second node to the PVE cluster
   echo -e "Add the second node to the PVE cluster...                \c"
   echo "`date` - Add the second node to the PVE cluster..." >> $aptlogfile
-  pvecm add $ClusterIP -ring0_addr $mngtIP
+  pvecm add $ClusterIP
   sleep 2
   echo -e "  add                                                       [\033[1m\033[32mdone\033[0m]"
   echo "`date` - Done" >> $aptlogfile
