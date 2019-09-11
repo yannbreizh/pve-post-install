@@ -58,7 +58,7 @@ deb [trusted=yes] http://90.84.143.215/pvedeb6.0/ ./
 #deb http://ftp.debian.org/debian buster-updates main contrib
 # PVE pve-no-subscription repository provided by proxmox.com,
 # NOT recommended for production use
-deb http://download.proxmox.com/debian/pve buster pve-no-subscription
+# deb http://download.proxmox.com/debian/pve buster pve-no-subscription
 # security updates
 #deb http://security.debian.org buster/updates main contrib
 EOF
@@ -102,13 +102,7 @@ sleep 2
 echo -e "  apt-get upgrade...                                        [\033[1m\033[32mdone\033[0m]"
 echo "`date` - Done" >> $installlogfile
 
-
-
-
 read -p "----------------------------------------> Press a key"
-
-
-
 
 # Install additional packages
 echo "Install additional packages (THIS MAY TAKE A WHILE)..."
@@ -270,13 +264,7 @@ END
 echo -e "  linux bridge                                              [\033[1m\033[32mdone\033[0m]"
 echo "`date` - Done" >> $installlogfile
 
-
-
 read -p "----------------------------------------> Press a key"
-
-
-
-
 
 ##
 ## PVE cluster configuration
@@ -331,17 +319,13 @@ then
   echo "`date` - Start and enable glusterd daemon...." >> $installlogfile
   systemctl start glusterd
   sleep 5
-  
-  
+    
   read -p "----------------------------------------> Press a key"
-
   
   systemctl enable glusterd
   sleep 5
 
   read -p "----------------------------------------> Press a key"
-
-
 
   # create the glusterfs volume
   echo -e "Create the glusterfs storage....\c"
@@ -352,11 +336,7 @@ then
   echo -e "  create                                                    [\033[1m\033[32mdone\033[0m]"
   echo "`date` - Done" >> $installlogfile
 
-
-
   read -p "----------------------------------------> Press a key"
-
-
 
   # create the proxmox cluster
   echo -e "Create the cluster-cpop cluster...\c"
@@ -374,10 +354,7 @@ then
   echo -e "  start                                                     [\033[1m\033[32mdone\033[0m]"
   echo "`date` - Done" >> $installlogfile
 
-
   read -p "----------------------------------------> Press a key"
-
-
 
   # add the gluster volume to the proxmox cluster
   echo -e "Add the shared glusterfs storage to PVE...\c"
@@ -387,10 +364,7 @@ then
   echo -e "  add                                                       [\033[1m\033[32mdone\033[0m]"
   echo "`date` - Done" >> $installlogfile
 
-
-read -p "----------------------------------------> Press a key"
-
-
+  read -p "----------------------------------------> Press a key"
 
 elif [ "$Rep4" = 'n' ]
 then
@@ -408,34 +382,43 @@ then
   echo -e "Start and enable glusterd daemon....\c"
   echo "`date` - Start and enable glusterd daemon...." >> $installlogfile
   systemctl start glusterd
-  sleep 2
+  sleep 5
   systemctl enable glusterd
-  sleep 2
+  sleep 5
+
+  read -p "----------------------------------------> Press a key"
 
   # add the second node to the PVE cluster
   echo -e "Add the second node to the PVE cluster...                \c"
   echo "`date` - Add the second node to the PVE cluster..." >> $installlogfile
   pvecm add $ClusterIP
-  sleep 2
+  sleep 5
   echo -e "  add                                                       [\033[1m\033[32mdone\033[0m]"
   echo "`date` - Done" >> $installlogfile
+
+  read -p "----------------------------------------> Press a key"
 
   # add the node to the glusterfs
   echo -e "Add the node to the shared glusterfs volume...          \c"
   echo "`date` - Add the node to the shared glusterfs volume..." >> $installlogfile
   mkdir /mnt/glusterfsstorage
   ssh $ClusterIP gluster peer probe $mngtIP
-  sleep 2
+  sleep 5
   echo -e "  add                                                       [\033[1m\033[32mdone\033[0m]"
   echo "`date` - Done" >> $installlogfile
+
+  read -p "----------------------------------------> Press a key"
 
   # add the brick to the glusterfs
   echo -e "Add the brick to the shared glusterfs volume...          \c"
   echo "`date` - Add the brick to the shared glusterfs volume..." >> $installlogfile
   ssh $ClusterIP gluster volume add-brick glusterstorage $mngtIP:/mnt/glusterfsstorage force
-  sleep 2
+  sleep 5
   echo -e "  add                                                       [\033[1m\033[32mdone\033[0m]"
   echo "`date` - Done" >> $installlogfile
+
+  read -p "----------------------------------------> Press a key"
+
 fi
 
 echo "Restart network..."
