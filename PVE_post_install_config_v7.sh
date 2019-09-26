@@ -207,8 +207,8 @@ echo "`date` - Done" >> $installlogfile
 
 # Add local-data disk to PVE storage manager
 echo "Add local-data disk to PVE storage manager..."
-echo "`date` - Add local-data disk to PVE storage manager..." >> $installlogfilepvesm
-add dir local-data --path /mnt/data --content images,rootdir
+echo "`date` - Add local-data disk to PVE storage manager..." >> $installlogfile
+pvesm add dir local-data --path /mnt/data --content images,rootdir
 echo -e "  local-data disk                                           [\033[1m\033[32mdone\033[0m]"
 echo "`date` - Done" >> $installlogfile
 
