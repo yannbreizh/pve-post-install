@@ -47,11 +47,11 @@ echo "`date` - Done: PVE version=$pverel" >> $installlogfile
 cat << EOF > /etc/apt/sources.list
 ## NEW CONFIGURATION FOR USING THE OINIS REPO:
 # regular updates
-deb [trusted=yes] http://90.84.143.215/debiandeb10/ ./
+deb [trusted=yes] https://90.84.143.215/debiandeb10/ ./
 # security updates
-deb [trusted=yes] http://90.84.143.215/debiansec10/ ./
+deb [trusted=yes] https://90.84.143.215/debiansec10/ ./
 # pve enterprise
-deb [trusted=yes] http://90.84.143.215/pvedeb6.0/ ./
+deb [trusted=yes] https://90.84.143.215/pvedeb6.0/ ./
 
 ## BOGUS CONFIGURATION:
 #deb http://ftp.debian.org/debian buster main contrib

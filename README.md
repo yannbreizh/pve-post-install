@@ -22,6 +22,6 @@ Network informations are needed to configure both servers (IP@, GW, DNS, FQDN...
 ## Usage
 
 ```bash
-./PVE_post_install_config_v6.sh
+./PVE_post_install_config_v7.sh
 # This will launch the installation script
 ```
