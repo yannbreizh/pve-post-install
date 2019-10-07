@@ -23,7 +23,7 @@ export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 EOF
 source ~/.bashrc
-echo -e "  .bashrc                                                   [\033[1m\033[32mdone\033[0m]"
+echo -e "[  \033[1m\033[32mOK\033[0m  ] .bashrc updated"
 echo "`date` - Done" >> $installlogfile
 
 # Check PVE release number
@@ -47,11 +47,11 @@ echo "`date` - Done: PVE version=$pverel" >> $installlogfile
 cat << EOF > /etc/apt/sources.list
 ## NEW CONFIGURATION FOR USING THE OINIS REPO:
 # regular updates
-deb [trusted=yes] https://90.84.143.215/debiandeb10/ ./
+deb [trusted=yes] http://90.84.143.215/debiandeb10/ ./
 # security updates
-deb [trusted=yes] https://90.84.143.215/debiansec10/ ./
+deb [trusted=yes] http://90.84.143.215/debiansec10/ ./
 # pve enterprise
-deb [trusted=yes] https://90.84.143.215/pvedeb6.0/ ./
+deb [trusted=yes] http://90.84.143.215/pvedeb6.0/ ./
 
 ## BOGUS CONFIGURATION:
 #deb http://ftp.debian.org/debian buster main contrib
@@ -68,7 +68,7 @@ cat << EOF > /etc/apt/sources.list.d/pve-enterprise.list
 #deb https://enterprise.proxmox.com/debian buster pve-enterprise
 EOF
 
-echo -e "  repos update                                              [\033[1m\033[32mdone\033[0m]"
+echo -e "[  \033[1m\033[32mOK\033[0m  ]  repos update"
 echo "`date` - Done" >> $installlogfile
 
 # Configure HTTP proxy to be the one deployed in the dedicated container on Passys
@@ -79,7 +79,7 @@ export http_proxy=http://90.84.143.118:8080
 export https_proxy=http://90.84.143.118:8080
 EOF
 source /etc/environment
-echo -e "  HTTP proxy                                                [\033[1m\033[32mdone\033[0m]"
+echo -e "[  \033[1m\033[32mOK\033[0m  ] HTTP proxy"
 echo "`date` - Done" >> $installlogfile
 
 # Update and upgrade the system
@@ -92,24 +92,22 @@ EOF
 source /etc/export
 apt-get -q -y -o "Dpkg::Options::=--force-confdef" -o "Dpkg::Options::=--force-confold" update >> $installlogfile
 sleep 2
-echo -e "  apt-get update                                            [\033[1m\033[32mdone\033[0m]"
+echo -e "[  \033[1m\033[32mOK\033[0m  ] apt-get update"
 echo "`date` - Done" >> $installlogfile
 
 echo "Upgrade the system (THIS MAY TAKE A WHILE)..."
 echo "`date` - Upgrade the system..." >> $installlogfile
 apt-get -q -y -o "Dpkg::Options::=--force-confdef" -o "Dpkg::Options::=--force-confold" dist-upgrade >> $installlogfile
 sleep 2
-echo -e "  apt-get upgrade...                                        [\033[1m\033[32mdone\033[0m]"
+echo -e "[  \033[1m\033[32mOK\033[0m  ] apt-get upgrade"
 echo "`date` - Done" >> $installlogfile
-
-read -p "----------------------------------------> Press a key"
 
 # Install additional packages
 echo "Install additional packages (THIS MAY TAKE A WHILE)..."
 echo "`date` - Install additional packages..." >> $installlogfile
 apt-get -q -y -o "Dpkg::Options::=--force-confdef" -o "Dpkg::Options::=--force-confold" install glusterfs-server lshw tmux htop atop iftop nload curl ethtool iproute2 >> $installlogfile
 sleep 2
-echo -e "  additional packages                                       [\033[1m\033[32mdone\033[0m]"
+echo -e "[  \033[1m\033[32mOK\033[0m  ] additional packages"
 echo "`date` - Done" >> $installlogfile
 
 # Install ntpdate package
@@ -117,7 +115,7 @@ echo -e "Installing ntpdate. \033\033[31mIf questionned at next prompt, enter Y\
 echo "`date` - Install ntpdate package..." >> $installlogfile
 apt-get -q -o "Dpkg::Options::=--force-confdef" -o "Dpkg::Options::=--force-confold" install ntpdate >> $installlogfile
 sleep 2
-echo -e "  ntpdate                                                   [\033[1m\033[32mdone\033[0m]"
+echo -e "[  \033[1m\033[32mOK\033[0m  ] ntpdate"
 echo "`date` - Done" >> $installlogfile
 
 ##
@@ -129,20 +127,15 @@ echo "Starting PVE tweaking..."
 # Disable the subscription message
 echo "Disable the subscription message..."
 echo "`date` - Disable the subscription message..." >> $installlogfile
-if [ "$pverel" = '4' ]
-then
-  sed -i "s/if (data.status === 'Active')/if (true)/" /usr/share/pve-manager/ext6/pvemanagerlib.js
-elif [ "$pverel" = '5' ] || [ "$pverel" = '6' ]; then
-  sed -i "s/if (data.status === 'Active')/if (true)/" /usr/share/pve-manager/js/pvemanagerlib.js
-fi
-echo -e "  remove message                                            [\033[1m\033[32mdone\033[0m]"
+sed -i "s/data.status !== 'Active'/false/g" /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js
+echo -e "[  \033[1m\033[32mOK\033[0m  ] remove message"
 echo "`date` - Done" >> $installlogfile
 
 # Update timezone - to be customized... ?!?
 echo "Update timezone..."
 echo "`date` - Update timezone..." >> $installlogfile
 dpkg-reconfigure tzdata
-echo -e " time zone to UTC                                           [\033[1m\033[32mdone\033[0m]"
+echo -e "[  \033[1m\033[32mOK\033[0m  ] time zone to UTC"
 echo "`date` - Done" >> $installlogfile
 
 # Update DNS
@@ -150,7 +143,7 @@ echo "Update DNS..."
 echo "`date` - Update DNS..." >> $installlogfile
 echo "nameserver 193.251.253.128" >> /etc/resolv.conf
 echo "nameserver 193.251.253.129" >> /etc/resolv.conf
-echo -e " DNS                                                        [\033[1m\033[32mdone\033[0m]"
+echo -e "[  \033[1m\033[32mOK\033[0m  ] DNS"
 echo "`date` - Done" >> $installlogfile
 
 # NTP
@@ -158,7 +151,7 @@ echo "Update NTP..."
 echo "`date` - Update NTP..." >> $installlogfile
 sed 's/^NTPSERVERS=\(.*\)/NTPSERVERS=\"ntp1.opentransit.net ntp2.opentransit.net\" #\1/' /etc/default/ntpdate > /root/tmp_ntpdate
 cp /root/tmp_ntpdate /etc/default/ntpdate
-echo -e " NTP                                                        [\033[1m\033[32mdone\033[0m]"
+echo -e "[  \033[1m\033[32mOK\033[0m  ] NTP"
 echo "`date` - Done" >> $installlogfile
 
 ##
@@ -183,7 +176,7 @@ do
   fi
 done
 datadisk=$newdatadisk
-echo -e "  gather disk                                               [\033[1m\033[32mdone\033[0m]"
+echo -e "[  \033[1m\033[32mOK\033[0m  ] gather disk"
 echo "`date` - Done" >> $installlogfile
 
 echo "Start data disk configuration..."
@@ -202,14 +195,14 @@ mke2fs -t ext4 /dev/$datapart
 mountpoint="/mnt/data/"
 mkdir $mountpoint
 echo "/dev/$datapart $mountpoint ext4 defaults 0 2" >> /etc/fstab
-echo -e "  disk config                                               [\033[1m\033[32mdone\033[0m]"
+echo -e "[  \033[1m\033[32mOK\033[0m  ] disk config"
 echo "`date` - Done" >> $installlogfile
 
 # Add local-data disk to PVE storage manager
 echo "Add local-data disk to PVE storage manager..."
 echo "`date` - Add local-data disk to PVE storage manager..." >> $installlogfile
 pvesm add dir local-data --path /mnt/data --content images,rootdir
-echo -e "  local-data disk                                           [\033[1m\033[32mdone\033[0m]"
+echo -e "[  \033[1m\033[32mOK\033[0m  ] local-data disk"
 echo "`date` - Done" >> $installlogfile
 
 ##
@@ -234,7 +227,7 @@ do
   echo -e "\033[31mInterface $intIntra will be used for intra-site traffic, are you sure? (y/n) \033[0m \c"
   read Rep2        
 done
-echo -e "  gather network info                                       [\033[1m\033[32mdone\033[0m]"
+echo -e "[  \033[1m\033[32mOK\033[0m  ] gather network info"
 echo "`date` - Done" >> $installlogfile
 
 # remove 'iface ens2f0 inet manual' kind of lines in the interfaces network configuration file (client and intrasite)
@@ -261,7 +254,7 @@ iface vmbr2 inet manual
   bridge_fd 0
   bridge_maxwait 0
 END
-echo -e "  linux bridge                                              [\033[1m\033[32mdone\033[0m]"
+echo -e "[  \033[1m\033[32mOK\033[0m  ] linux bridge"
 echo "`date` - Done" >> $installlogfile
 
 read -p "----------------------------------------> Press a key"
@@ -287,7 +280,7 @@ do
   fi
 done
 mngtIP=$newmngtIP
-echo -e "  gather                                                    [\033[1m\033[32mdone\033[0m]"
+echo -e "[  \033[1m\033[32mOK\033[0m  ] gather cluster info"
 echo "`date` - Done" >> $installlogfile
 
 echo "Select node in the PVE cluster..."
@@ -305,7 +298,7 @@ do
     read Rep
   fi
 done
-echo -e "  select                                                    [\033[1m\033[32mdone\033[0m]"
+echo -e "[  \033[1m\033[32mOK\033[0m  ] select node cluster"
 echo "`date` - Done" >> $installlogfile
 
 # Start glusterfs/cluster configuration
@@ -325,15 +318,13 @@ then
   systemctl enable glusterd
   sleep 5
 
-  read -p "----------------------------------------> Press a key"
-
   # create the glusterfs volume
   echo -e "Create the glusterfs storage....\c"
   echo "`date` - Create the glusterfs storage...." >> $installlogfile
   mkdir /mnt/glusterfsstorage
   gluster volume create glusterstorage $mngtIP:/mnt/glusterfsstorage force
   sleep 5
-  echo -e "  create                                                    [\033[1m\033[32mdone\033[0m]"
+  echo -e "[  \033[1m\033[32mOK\033[0m  ] create volume"
   echo "`date` - Done" >> $installlogfile
 
   read -p "----------------------------------------> Press a key"
@@ -343,7 +334,7 @@ then
   echo "`date` - Create the cluster-cpop cluster..." >> $installlogfile
   pvecm create cluster-cpop
   sleep 5
-  echo -e "  create                                                    [\033[1m\033[32mdone\033[0m]"
+  echo -e "[  \033[1m\033[32mOK\033[0m  ] create cluster"
   echo "`date` - Done" >> $installlogfile
 
   # start the gluster volume
@@ -351,7 +342,7 @@ then
   echo "`date` - Start the gluster volume..." >> $installlogfile
   gluster volume start glusterstorage
   sleep 5
-  echo -e "  start                                                     [\033[1m\033[32mdone\033[0m]"
+  echo -e "[  \033[1m\033[32mOK\033[0m  ] start volume"
   echo "`date` - Done" >> $installlogfile
 
   read -p "----------------------------------------> Press a key"
@@ -361,7 +352,7 @@ then
   echo "`date` - Add the shared glusterfs storage to PVE ..." >> $installlogfile
   pvesm add glusterfs Shared --server $mngtIP --path /mnt/pve/Shared --volume glusterstorage --content vztmpl,images,iso,backup
   sleep 5
-  echo -e "  add                                                       [\033[1m\033[32mdone\033[0m]"
+  echo -e "[  \033[1m\033[32mOK\033[0m  ] add shared storage"
   echo "`date` - Done" >> $installlogfile
 
   read -p "----------------------------------------> Press a key"
@@ -393,7 +384,7 @@ then
   echo "`date` - Add the second node to the PVE cluster..." >> $installlogfile
   pvecm add $ClusterIP
   sleep 5
-  echo -e "  add                                                       [\033[1m\033[32mdone\033[0m]"
+  echo -e "[  \033[1m\033[32mOK\033[0m  ] add"
   echo "`date` - Done" >> $installlogfile
 
   read -p "----------------------------------------> Press a key"
@@ -404,7 +395,7 @@ then
   mkdir /mnt/glusterfsstorage
   ssh $ClusterIP gluster peer probe $mngtIP
   sleep 5
-  echo -e "  add                                                       [\033[1m\033[32mdone\033[0m]"
+  echo -e "[  \033[1m\033[32mOK\033[0m  ] add"
   echo "`date` - Done" >> $installlogfile
 
   read -p "----------------------------------------> Press a key"
@@ -414,7 +405,7 @@ then
   echo "`date` - Add the brick to the shared glusterfs volume..." >> $installlogfile
   ssh $ClusterIP gluster volume add-brick glusterstorage $mngtIP:/mnt/glusterfsstorage force
   sleep 5
-  echo -e "  add                                                       [\033[1m\033[32mdone\033[0m]"
+  echo -e "[  \033[1m\033[32mOK\033[0m  ] add"
   echo "`date` - Done" >> $installlogfile
 
   read -p "----------------------------------------> Press a key"
@@ -424,7 +415,7 @@ fi
 echo "Restart network..."
 echo "`date` - Restart network..." >> $installlogfile
 systemctl restart networking.service
-echo -e "  restart                                                   [\033[1m\033[32mdone\033[0m]"
+echo -e "[  \033[1m\033[32mOK\033[0m  ] restart"
 echo "`date` - Done" >> $installlogfile
 
 echo ""
