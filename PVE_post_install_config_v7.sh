@@ -224,7 +224,7 @@ echo "`date` - Done" >> $logfile
 # remove 'iface ens2f0 inet manual' kind of lines in the interfaces network configuration file (client and intrasite)
 sed -i "/iface $intClient inet manual/d" /etc/network/interfaces
 sed -i "/iface $intIntra inet manual/d" /etc/network/interfaces
-hist    
+    
 # configure linux bridge in the interfaces network configuration file
 echo "Configure linux bridge..."
 echo "`date` - Configure bridge-utils..." >> $logfile
